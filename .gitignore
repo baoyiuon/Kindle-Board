@@ -1,0 +1,32 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Data & local run artifacts
+server/data/
+data/
+*.log
+*.lock
+test_*.png
+test_dashboard.png
+
+# Large binary tools (download via releases / guide links)
+tools/*.tar.gz
+tools/*.tar.xz
+tools/*.zip
+tools/*.bin
+tools/mrpi/
+tools/LanguageBreak/
+tools/KOL/
+tools/kual_extracted/
+tools/helper_extracted/
+
+# Sensitive keys
+*.key
+*.pem
+*.pub
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  kindle-board:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: kindle-board
+    restart: always
+    ports:
+      - "8085:8085"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - TZ=Asia/Shanghai

@@ -1,0 +1,34 @@
+{
+  "items": [
+    {
+      "name": "Kindle同步看板",
+      "priority": -999,
+      "items": [
+        {
+          "name": "立即刷新一次看板",
+          "priority": 1,
+          "action": "./bin/run_once.sh",
+          "exitmenu": false
+        },
+        {
+          "name": "启动定时自动看板 (低功耗)",
+          "priority": 2,
+          "action": "./bin/start_daemon.sh",
+          "exitmenu": true
+        },
+        {
+          "name": "停止定时自动看板",
+          "priority": 3,
+          "action": "./bin/stop_daemon.sh",
+          "exitmenu": false
+        },
+        {
+          "name": "查看运行状态与电量",
+          "priority": 4,
+          "action": "./bin/status.sh",
+          "exitmenu": false
+        }
+      ]
+    }
+  ]
+}
