@@ -117,11 +117,21 @@ while true; do
     fi
 
     log "Suspending device for ${SLEEP_TIME} seconds..."
+    START_SUSPEND=$(date +%s)
     if [ -e /sys/class/rtc/rtc1/wakealarm ]; then
         echo 0 > /sys/class/rtc/rtc1/wakealarm
         echo "+$SLEEP_TIME" > /sys/class/rtc/rtc1/wakealarm
         echo mem > /sys/power/state
     else
-        rtcwake -d /dev/rtc1 -m mem -s "$SLEEP_TIME" 2>/dev/null || sleep "$SLEEP_TIME"
+        rtcwake -d /dev/rtc1 -m mem -s "$SLEEP_TIME" 2>/dev/null
+    fi
+    END_SUSPEND=$(date +%s)
+    ELAPSED=$((END_SUSPEND - START_SUSPEND))
+    REMAINING=$((SLEEP_TIME - ELAPSED))
+
+    # 关键防暴走保底：若深度休眠被系统唤醒锁拒绝（耗时少于设定值），强制调用标准 sleep 补足剩余时间！
+    if [ "$REMAINING" -gt 30 ]; then
+        log "Suspend returned early (${ELAPSED}s < ${SLEEP_TIME}s). Sleeping remainder ${REMAINING}s..."
+        sleep "$REMAINING"
     fi
 done

@@ -10,6 +10,7 @@ data/
 *.lock
 test_*.png
 test_dashboard.png
+tools/*_fixed.sh
 
 # Large binary tools (download via releases / guide links)
 tools/*.tar.gz

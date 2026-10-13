@@ -443,15 +443,6 @@ HTML_PAGE = """<!DOCTYPE html>
       </div>
       <div class="preview-box">
         <img id="screenPreview" class="preview-img" src="./screen.png" alt="Kindle 墨水屏预览">
-        <div style="font-size: 13px; color: #4b5563; margin-top: 12px; line-height: 1.6;">
-          Kindle 拉取地址：<code id="pullUrlText">http://&lt;your-server-ip&gt;:8085/screen.png</code><br>
-          分辨率：<b>1072 × 1448</b> (KPW3 原生高清灰阶)
-        </div>
-        <div style="margin-top: 14px;">
-          <a href="./kindle-files.zip" class="btn btn-secondary" style="display: inline-flex; text-decoration: none; justify-content: center; width: 100%;">
-            📥 下载 Kindle 端一键配置包 (kindle-files.zip)
-          </a>
-        </div>
       </div>
     </div>
   </div>
@@ -629,12 +620,6 @@ HTML_PAGE = """<!DOCTYPE html>
       return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
-    try {
-      const fullUrl = window.location.origin + window.location.pathname.replace(/\/$/, '') + '/screen.png';
-      const el = document.getElementById('pullUrlText');
-      if (el) el.innerText = fullUrl;
-    } catch(e) {}
-
     loadData();
   </script>
 </body>
@@ -697,9 +682,13 @@ class KindleDashboardHandler(BaseHTTPRequestHandler):
             return
 
         elif path in ("/screen.png", "/dashboard.png"):
-            # Ensure file exists
-            if not os.path.exists(SCREEN_IMAGE_PATH):
-                save_data(load_data())
+            # 保证日期星期与同步时间实时更新（若超过10秒则自动重新渲染）
+            now_ts = time.time()
+            if (not os.path.exists(SCREEN_IMAGE_PATH)) or (now_ts - os.path.getmtime(SCREEN_IMAGE_PATH) > 10):
+                try:
+                    render_dashboard(load_data(), SCREEN_IMAGE_PATH)
+                except Exception as e:
+                    print(f"On-demand render error: {e}", file=sys.stderr)
             try:
                 with open(SCREEN_IMAGE_PATH, "rb") as f:
                     content = f.read()
